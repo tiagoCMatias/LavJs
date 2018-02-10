@@ -1,0 +1,25 @@
+{
+  "name": "lavjs",
+  "version": "1.0.0",
+  "description": "a web app project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"client": "cd lavjs-client && npm install && npm start",
+    "server": "cd lavjs-server && npm install && npm start",
+    "start": "concurrently \"npm run client\" \"npm run server\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiagoCMatias/LavJs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tiagoCMatias/LavJs/issues"
+  },
+  "homepage": "https://github.com/tiagoCMatias/LavJs#readme",
+  "devDependencies": {
+    "concurrently": "^3.5.1"
+  }
+}
