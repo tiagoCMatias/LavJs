@@ -7,6 +7,7 @@
       v-model="drawer"
       enable-resize-watcher
       fixed
+      temporary
       app
     >
       <v-list>

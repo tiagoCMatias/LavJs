@@ -134,7 +134,6 @@ export default {
             postLavandarias(this.name, this.local)
                 .then(resposta => {
                     this.dialog = false;
-                    //loadTable();
                 })
                 .catch(error => {
                     console.log("Error");

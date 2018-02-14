@@ -12,10 +12,21 @@
                     <v-form v-model="valid" ref="form" lazy-validation>
                         <v-layout wrap>
                         <v-flex xs12>
-                            <v-text-field label="Nome" v-model="name" :rules="formRules" required></v-text-field>
+                            <v-text-field label="Nome" v-model="machine_name" :rules="formRules" required></v-text-field>
                         </v-flex>
-                        <v-flex xs12>
-                            <v-select v-bind:items="dropdown_lavandarias" overflow label="Select"></v-select>
+                        <v-flex xs6>
+                            <v-subheader>Lavandaria</v-subheader>
+                        </v-flex>
+                        <v-flex xs6>
+                            <v-select 
+                            v-bind:items="dropdown_lavandarias" 
+                            label="Select"
+                            v-model="lavandaria"
+                            single-line
+                            required
+         
+                            >
+                            </v-select>
                         </v-flex>
                         </v-layout>
                     </v-form>
@@ -25,7 +36,7 @@
                 <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" flat @click.native="dialog = false">Close</v-btn>
-                <v-btn color="blue darken-1" flat @click.native="addLav">Save</v-btn>
+                <v-btn color="blue darken-1" flat @click.native="addMaq">Save</v-btn>
                 </v-card-actions>
             </v-card>
             </v-dialog>
@@ -53,10 +64,10 @@
                 class="elevation-1"
                 >
                 <template slot="items" slot-scope="props">
-                    <tr @click="teste">
+                    <tr >
                         <td>{{ props.item.id }}</td>
-                        <td class="text-xs-right">{{ props.item.local }}</td>
                         <td class="text-xs-right">{{ props.item.name }}</td>
+                        <td class="text-xs-right">{{ props.item.lavandaria }}</td>
                         <td class="text-xs-right">{{ props.item.liquido }}</td>
                     </tr>
                 </template>
@@ -76,20 +87,21 @@
 
 
 <script>
-import { getLavandarias, getMaquinas } from '@/utils/configuration-manager'
+import { getLavandarias, getMaquinas, postMaquinas } from '@/utils/configuration-manager'
 export default {
   data() {
       return {
             valid: false,
             search: '',
             dialog: false,
-            name: '',
+            machine_name: '',
             local: '',
+            lavandaria: null,
             item_lavandarias: [],
             dropdown_lavandarias: [],
             formRules: [
                 (v) => (!!v || 'Required'),
-                (v) => (v > 0 && v.length <= 20 || 'Required')
+                (v) => (v.length <= 20 || 'Required')
             ],
             headers: [
                 {
@@ -102,8 +114,7 @@ export default {
                 { text: 'Lavandaria', value: 'lavandaria' },
                 { text: 'Programa', value: 'programa' }
             ],
-            items: [
-            ]
+            items: []
       }
     },
     mounted:function(){
@@ -111,6 +122,22 @@ export default {
     },
     methods: {
         loadTable:function(){
+            getMaquinas()
+            .then(resposta => {
+                resposta.forEach(element => {
+                    this.items.push(
+                        { 
+                            id: element._id,
+                            name: element.name,
+                            programa: element.programa,
+                        }
+                    );
+                });
+
+            })
+            .catch(error => {
+                console.log("Deu erro");
+            });
             getLavandarias().then((resposta) => {
                 for(let i = 0; i < resposta.length; i++)
                 {
@@ -122,13 +149,22 @@ export default {
                             id: resposta[i]._id,
                             name: resposta[i].name,
                             local: resposta[i].local,
-                            liquido: resposta[i].liq_total
                         }
                     );
-                    this.dropdown_lavandarias.push( { text: resposta[i].name } );
+                    this.dropdown_lavandarias.push( { text: resposta[i].name, id_lav: resposta[i]._id } );
                 }
             });
         },
+        addMaq:function(){
+            console.log(this.lavandaria.text);
+            console.log(this.lavandaria.id_lav);
+            /*this.dropdown_lavandarias.forEach(element => {
+                if(element.text === this.lav_choice){
+                    console.log(element.id_lav);
+                }
+            });*/
+            console.log(this.machine_name);
+        }
     }
 }
 </script>
