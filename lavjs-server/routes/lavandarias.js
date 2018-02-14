@@ -12,9 +12,18 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/all', (req, res, next) => {
-    res.status(200).json({
-        message: 'List All'
-    });
+    
+    Lav.find()
+        .exec()
+        .then(doc => {
+            if(doc){
+                res.status(201).json(doc);
+            }
+        })
+        .catch(error => {
+            res.status(401).json({ message: "error fecthing data" });
+            //console.log("erro");
+        });
 });
 
 router.get('/:lavId', (req, res, next) => {
@@ -36,14 +45,15 @@ router.post('/new', (req, res, next) => {
 
     const lav = new Lav ({
         local: req.body.local,
-        name: req.body.nome,
+        name: req.body.name,
         liq_total: req.body.liq_total
     });
-
+    console.log(lav.local);
+    console.log(lav.name);
     lav
         .save()
         .then(result => {
-            console.log(Sucess);
+            console.log("Sucess");
         })
         .catch(error => {
             console.log(error);
